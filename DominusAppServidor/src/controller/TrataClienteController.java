@@ -5,7 +5,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import model.UsuarioDao;
+import model.VendaDao;
 import modelDominio.Usuario;
+import modelDominio.Vendedor;
 
 public class TrataClienteController extends Thread {
     private Socket socket;
@@ -43,9 +45,12 @@ public class TrataClienteController extends Thread {
                     
                     UsuarioDao usuarioDao = new UsuarioDao();
                     out.writeObject(usuarioDao.efetuarLogin(usuario));
+                    
                 } else if (comando.equalsIgnoreCase("ListaVendas")) {
-                    //VendaDao vendaDao = new VendaDao();
-                    //out.writeObject();
+                    out.writeObject("ok");
+                    Vendedor vendedor = (Vendedor) in.readObject();
+                    VendaDao vendaDao = new VendaDao();
+                    out.writeObject(vendaDao.getLista(vendedor));
                 }
                 comando = (String) in.readObject();
             }

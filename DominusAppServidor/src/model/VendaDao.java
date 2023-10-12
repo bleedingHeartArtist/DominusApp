@@ -14,7 +14,7 @@ import modelDominio.Vendedor;
 public class VendaDao {
     private Connection con;
 
-    public VendaDao(Connection con) {
+    public VendaDao() {
         this.con = Conector.getConnection();
     }
     
@@ -22,53 +22,62 @@ public class VendaDao {
     public ArrayList<Venda> getLista(Vendedor vendedor) {
         Statement stmt = null;
         ArrayList<Venda> listaVendas;
-        ArrayList<ItensVenda> listaItensVenda;
+        ArrayList<ItensVenda> listaItensVendaAux;
         
         try {
             stmt = con.createStatement();
-            ResultSet res = stmt.executeQuery( " SELECT * FROM ITENSVENDA"+
-                                            " LEFT OUTER JOIN PRODUTO ON PRODUTO.CODPRODUTO = ITENS.CODPRODUTO"+
+            ResultSet res = stmt.executeQuery( " SELECT MARCA.*, DEPARTAMENTO.*, PRODUTO.CODVENDEDOR, PRODUTO.CODPRODUTO, PRODUTO.NOME AS NOMEPRODUTO,"+
+                                            " PRODUTO.DESCRICAO, PRODUTO.PRECO, ITENSVENDA.*, VENDA.*, USUARIO.CPF, USUARIO.CODUSUARIO, USUARIO.NOME"+
+                                            " FROM ITENSVENDA"+
+                                            " LEFT OUTER JOIN PRODUTO ON PRODUTO.CODPRODUTO = ITENSVENDA.CODPRODUTO"+
                                             " LEFT OUTER JOIN DEPARTAMENTO ON DEPARTAMENTO.CODDPTO = PRODUTO.CODDPTO"+
+                                            " LEFT OUTER JOIN MARCA ON MARCA.CODMARCA = PRODUTO.CODMARCA "+
                                             " LEFT OUTER JOIN VENDA ON VENDA.CODVENDA = ITENSVENDA.CODVENDA"+
                                             " LEFT OUTER JOIN USUARIO ON VENDA.CODCLIENTE = USUARIO.CODUSUARIO"+
                                             " WHERE PRODUTO.CODVENDEDOR = "+vendedor.getCodUsuario()+
                                             " ORDER BY VENDA.CODVENDA;");
             
             listaVendas = new ArrayList<>();     
-            listaItensVenda = new ArrayList<>();
+            listaItensVendaAux = new ArrayList<>();
+            Venda venda = null;
+            Cliente clienteVenda = null;
             int vendaAtual = -1;
-                    
-            while (res.next()) {
+           
+            while (res.next()) {   
                 
-                Marca marcaProduto = new Marca(res.getInt("codMarca"), res.getString("nomeMarca"));
+                if (vendaAtual != res.getInt("CODVENDA") && vendaAtual != -1) {  
+                    listaVendas.add(venda);
+                    listaItensVendaAux.clear();
+                }
+        
+                Marca marcaProduto = new Marca(res.getInt("CODMARCA"), res.getString("NOMEMARCA"));
                 
                 Departamento departamentoProduto = new Departamento(res.getInt("CODDPTO"), 
                  res.getString("NOMEDPTO"));
                 
                 Vendedor vendedorProduto = new Vendedor(res.getInt("CODVENDEDOR"));
                 
-                Produto produtoVenda = new Produto(res.getInt("CODPRODUTO"), res.getString("NOME"), res.getString("DESCRICAO"),
+                Produto produtoVenda = new Produto(res.getInt("CODPRODUTO"), res.getString("NOMEPRODUTO"), res.getString("DESCRICAO"),
                         res.getFloat("PRECO"), marcaProduto, departamentoProduto, vendedorProduto);
                 
                 ItensVenda itemVenda = new ItensVenda(res.getInt("CODITENSVENDA"), produtoVenda, res.getInt("QUANTIDADE"), 
-                   res.getInt("VALOUNITARIO"), res.getInt("VALORTOTAL"));
+                   res.getInt("VALORUNITARIO"), res.getInt("VALORTOTAL"));
                 
-                listaItensVenda.add(itemVenda);
+                listaItensVendaAux.add(itemVenda);
                 
-                if (vendaAtual != res.getInt("CODVENDA")) {
-                    vendaAtual = res.getInt("CODVENDA");
+                clienteVenda = new Cliente(res.getString("CPF"), res.getInt("CODUSUARIO"), 
+                            res.getString("NOME"));
+                
+                ArrayList<ItensVenda> listaItensVenda = new ArrayList<>();
+                listaItensVenda.addAll(listaItensVendaAux);
                     
-                    Cliente clienteVenda = new Cliente(res.getString("CPF"), res.getInt("CODUSUARIO"), 
-                            res.getString("PRODUTO.NOME"));
-                    
-                    Venda venda = new Venda(vendaAtual, res.getDate("DATAVENDA"), res.getFloat("VALOR"), 
-                                        listaItensVenda, clienteVenda);
-                    
-                    listaVendas.add(venda);
-                    
-                    listaItensVenda.clear();
-                }
-            }
+                venda = new Venda(res.getInt("CODVENDA"), res.getDate("DATAVENDA"), res.getFloat("VALOR"), 
+                           listaItensVenda, clienteVenda);
+                  
+                vendaAtual = res.getInt("CODVENDA");
+                
+            }       
+            listaVendas.add(venda);
             
             res.close();
             stmt.close();
