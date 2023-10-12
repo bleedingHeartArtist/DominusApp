@@ -66,5 +66,17 @@ public class Venda implements Serializable{
         this.cliente = cliente;
     }
     
+    public String getItensLiteral() {
+        String itens = "";
+        
+        for (int i = 0; i < this.itens.size(); i++) {
+            if (!itens.equals("")) {
+                itens += ", ";
+            }
+            itens += this.itens.get(i).getProduto().getNome();
+        }
+        
+        return itens;
+    }
     
 }
