@@ -10,6 +10,11 @@ public class Cliente extends Usuario implements Serializable{
     public String toString() {
         return super.toString()+"Cliente ("+')';
     }
+
+    public Cliente(String cpf, int codUsuario, String nome) {
+        super(codUsuario, nome);
+        this.cpf = cpf;
+    }
     
     public Cliente(String nome, String login, String senha, String endereco) {
         super(nome, login, senha, endereco);

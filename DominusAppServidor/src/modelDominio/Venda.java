@@ -1,6 +1,8 @@
 package modelDominio;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -66,5 +68,27 @@ public class Venda implements Serializable{
         this.cliente = cliente;
     }
     
+    public String getDataVendaString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf.format(this.dataVenda);
+    }
+    
+    public String getValorString() { 
+        DecimalFormat dcf = new DecimalFormat("#,##0.00");
+        return dcf.format(this.valor);
+    }
+    
+    public String getItensLiteral() {
+        String itens = "";
+        
+        for (int i = 0; i < this.itens.size(); i++) {
+            if (!itens.equals("")) {
+                itens += ", ";
+            }
+            itens += this.itens.get(i).getProduto().getNome();
+        }
+        
+        return itens;
+    }
     
 }

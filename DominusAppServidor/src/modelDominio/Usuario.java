@@ -81,5 +81,12 @@ public class Usuario implements Serializable{
         //DELETES
         this.codUsuario = codUsuario;
     }
+
+    public Usuario(int codUsuario, String nome) {
+        //PARA O OBJETO DE VENDA
+        this.codUsuario = codUsuario;
+        this.nome = nome;
+    }
+    
     
 }
