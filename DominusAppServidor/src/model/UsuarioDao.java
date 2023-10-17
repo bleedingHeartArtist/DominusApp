@@ -47,4 +47,45 @@ public class UsuarioDao {
             return usuarioSelect;
         }
     }
+    
+    public boolean vendedorInserir(Vendedor vendedor) {
+        boolean resultado;
+        PreparedStatement stmt = null;
+        
+        try {
+            con.setAutoCommit(false);
+            
+            String sql = ("INSERT INTO USUARIO (NOME, LOGIN, SENHA, ENDERECO, CNPJ, CPF, TIPO)"+
+                          " VALUES(?,?,?,?,?,NULL,2)");
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, vendedor.getNome());
+            stmt.setString(2, vendedor.getLogin());
+            stmt.setString(3, vendedor.getSenha());
+            stmt.setString(4, vendedor.getEndereco());
+            stmt.setString(5, vendedor.getCnpj());
+            
+            stmt.execute();
+            con.commit();
+            resultado = true;
+        } catch (SQLException e) {
+            try {
+                con.rollback();
+                e.printStackTrace();
+                resultado = false;
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                resultado = false;
+            }
+        } finally {
+            try {
+                stmt.close();
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                resultado = false;
+            }
+        }
+        return resultado;
+    }
 }
