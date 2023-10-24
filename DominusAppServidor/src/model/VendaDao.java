@@ -18,7 +18,6 @@ public class VendaDao {
         this.con = Conector.getConnection();
     }
     
-    //TODO
     public ArrayList<Venda> getLista(Vendedor vendedor) {
         Statement stmt = null;
         ArrayList<Venda> listaVendas;
