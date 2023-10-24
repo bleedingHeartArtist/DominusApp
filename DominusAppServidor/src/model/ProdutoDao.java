@@ -24,7 +24,7 @@ public class ProdutoDao {
             
             ResultSet res = stmt.executeQuery(" SELECT PRODUTO.*, MARCA.*, DEPARTAMENTO.*"+
                                               " FROM PRODUTO"+
-                                              " INNER JOIN MARCA ON PRODUTO.MARCA = MARCA.CODMARCA"+
+                                              " INNER JOIN MARCA ON PRODUTO.CODMARCA = MARCA.CODMARCA"+
                                               " INNER JOIN DEPARTAMENTO ON PRODUTO.CODDPTO = DEPARTAMENTO.CODDPTO"+
                                               " WHERE PRODUTO.CODVENDEDOR = "+vendedor.getCodUsuario());
             
