@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import model.DepartamentoDao;
+import model.MarcaDao;
 import model.ProdutoDao;
 import model.UsuarioDao;
 import model.VendaDao;
+import modelDominio.Produto;
 import modelDominio.Usuario;
 import modelDominio.Vendedor;
 
@@ -63,6 +66,17 @@ public class TrataClienteController extends Thread {
                     Vendedor vendedor = (Vendedor) in.readObject();
                     ProdutoDao produtoDao = new ProdutoDao();
                     out.writeObject(produtoDao.getLista(vendedor));
+                } else if (comando.equalsIgnoreCase("ListaMarcas")) {
+                    MarcaDao marcaDao = new MarcaDao();
+                    out.writeObject(marcaDao.getLista());
+                } else if (comando.equalsIgnoreCase("ListaDepartamentos")) {
+                    DepartamentoDao dptoDao = new DepartamentoDao();
+                    out.writeObject(dptoDao.getLista());  
+                } else if (comando.equalsIgnoreCase("ProdutoInserir")) {
+                    out.writeObject("ok");
+                    Produto produto = (Produto)in.readObject();
+                    ProdutoDao produtoDao = new ProdutoDao();
+                    out.writeObject(produtoDao.produtoInserir(produto));   
                 }
                 comando = (String) in.readObject();
             }

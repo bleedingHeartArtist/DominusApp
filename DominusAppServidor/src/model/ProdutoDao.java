@@ -49,4 +49,27 @@ public class ProdutoDao {
         return listaProdutos;
     }
     
+    public boolean produtoInserir(Produto produto) {
+        boolean resultado;
+        PreparedStatement stmt;
+        
+        try {
+            con.setAutoCommit(false);
+            String sql = "INSERT INTO PRODUTO (NOME, DESCRICAO, CODDPTO, PRECO, CODMARCA, CODVENDEDOR)"+
+                    " VALUES (?,?,?,?,?,?)";
+            
+            stmt = con.prepareStatement(sql);
+            
+            stmt.setString(1, produto.getNome());
+            stmt.setString(2, produto.getDescricao());
+            
+            resultado = true;
+            
+        } catch (Exception e) {
+            resultado = false;
+        }
+        
+        return resultado;
+    }
+    
 }
