@@ -73,7 +73,7 @@ public class UsuarioDao {
                 e.printStackTrace();
                 resultado = false;
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                ex.printStackTrace();   
                 resultado = false;
             }
         } finally {
