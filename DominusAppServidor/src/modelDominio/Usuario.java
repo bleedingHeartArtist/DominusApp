@@ -10,6 +10,19 @@ public class Usuario implements Serializable{
     private String endereco;
 
     @Override
+    public boolean equals(Object obj) {
+        boolean resultado;
+        
+        if (obj instanceof Usuario) {
+            Usuario usr = (Usuario) obj;
+            resultado = this.codUsuario == usr.getCodUsuario();
+        } else
+            resultado = false;
+        
+        return resultado;
+    }
+
+    @Override
     public String toString() {
         return  "Usuario{" + "codUsuario=" + codUsuario + ", nomeUsuario=" + nome + ", login=" + login + ", senha=" + senha + ", endereco=" + endereco + '}';
                 }  
@@ -87,6 +100,12 @@ public class Usuario implements Serializable{
         this.codUsuario = codUsuario;
         this.nome = nome;
     }
-    
+
+    public Usuario(int codUsuario, String nome, String endereco) {
+        //PARA A VISUALIZAÇÃO DE CLIENTES POR PARTE DO VENDEDOR
+        this.codUsuario = codUsuario;
+        this.nome = nome;
+        this.endereco = endereco;
+    }
     
 }

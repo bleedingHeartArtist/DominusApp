@@ -51,7 +51,7 @@ public class ProdutoDao {
     
     public boolean produtoInserir(Produto produto) {
         boolean resultado;
-        PreparedStatement stmt;
+        PreparedStatement stmt = null;
         
         try {
             con.setAutoCommit(false);
@@ -62,14 +62,34 @@ public class ProdutoDao {
             
             stmt.setString(1, produto.getNome());
             stmt.setString(2, produto.getDescricao());
+            stmt.setInt(3, produto.getDepartamento().getCodDpto());
+            stmt.setFloat(4, produto.getPreco());
+            stmt.setInt(5, produto.getMarca().getCodMarca());
+            stmt.setInt(6, produto.getVendedor().getCodUsuario());
             
+            stmt.execute();
+            con.commit();
             resultado = true;
             
-        } catch (Exception e) {
-            resultado = false;
-        }
-        
+        } catch (SQLException e) {
+            try {
+                con.rollback();
+                e.printStackTrace();
+                resultado = false;
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                resultado = false;
+            }
+        } finally {
+            try {
+                stmt.close();
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                resultado = false;
+            }
+        }      
         return resultado;
-    }
-    
+    }  
 }

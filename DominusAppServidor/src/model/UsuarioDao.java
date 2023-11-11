@@ -2,6 +2,7 @@ package model;
 
 import factory.Conector;
 import java.sql.*;
+import java.util.ArrayList;
 import modelDominio.Cliente;
 import modelDominio.Usuario;
 import modelDominio.Vendedor;
@@ -73,7 +74,7 @@ public class UsuarioDao {
                 e.printStackTrace();
                 resultado = false;
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                ex.printStackTrace();   
                 resultado = false;
             }
         } finally {
@@ -88,4 +89,45 @@ public class UsuarioDao {
         }
         return resultado;
     }
+    
+    public ArrayList<Cliente> getListaClientes (Vendedor vendedor) {
+        PreparedStatement stmt = null;
+        ArrayList<Cliente> listaClientes;
+        
+        try {
+            String sql = "SELECT USUARIO.*" +
+                         " FROM USUARIO" +
+                         " INNER JOIN VENDA ON VENDA.CODCLIENTE = USUARIO.CODUSUARIO " +
+                         " INNER JOIN ITENSVENDA ON ITENSVENDA.CODVENDA = VENDA.CODVENDA" +
+                         " INNER JOIN PRODUTO ON ITENSVENDA.CODPRODUTO = PRODUTO.CODPRODUTO" +
+                         " WHERE PRODUTO.CODVENDEDOR = ?";
+            
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, vendedor.getCodUsuario()); 
+            
+            ResultSet res = stmt.executeQuery();
+            
+            listaClientes = new ArrayList<>();          
+            while (res.next()) {                
+                Cliente clienteSel = new Cliente(res.getString("CPF"), res.getInt("CODUSUARIO"), 
+                        res.getString("NOME"), res.getString("ENDERECO"));
+                
+                if (!listaClientes.contains(clienteSel)) {
+                    listaClientes.add(clienteSel);
+                }                
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            listaClientes = null;
+        } finally {
+            try {
+                stmt.close();
+                con.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaClientes;
+    }
+    
 }
