@@ -77,6 +77,11 @@ public class TrataClienteController extends Thread {
                     Produto produto = (Produto)in.readObject();
                     ProdutoDao produtoDao = new ProdutoDao();
                     out.writeObject(produtoDao.produtoInserir(produto));   
+                } else if (comando.equalsIgnoreCase("ListaClientes")) {
+                    out.writeObject("ok");
+                    Vendedor vendedor = (Vendedor)in.readObject();
+                    UsuarioDao usrDao = new UsuarioDao();
+                    out.writeObject(usrDao.getListaClientes(vendedor));
                 }
                 comando = (String) in.readObject();
             }
