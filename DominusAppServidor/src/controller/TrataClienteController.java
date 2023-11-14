@@ -85,6 +85,11 @@ public class TrataClienteController extends Thread {
                 } else if(comando.equalsIgnoreCase("ListaProdutosCompleta")){
                     ProdutoDao produtoDao = new ProdutoDao();
                     out.writeObject(produtoDao.getListaCompleta());
+                } else if (comando.equalsIgnoreCase("ProdutoExcluir")) {
+                    out.writeObject("ok");
+                    Produto produto = (Produto)in.readObject();
+                    ProdutoDao produtoDao = new ProdutoDao();
+                    out.writeObject(produtoDao.produtoExcluir(produto));
                 }
                 comando = (String) in.readObject();
             }
