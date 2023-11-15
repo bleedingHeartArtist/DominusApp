@@ -56,15 +56,15 @@ public class ProdutoDao {
     
         try {
             stmt = con.createStatement();
-                    ResultSet res = stmt.executeQuery("SELECT PRODUTO.*, MARCA.*, DEPARTAMENTO.*"+
+            ResultSet res = stmt.executeQuery("SELECT PRODUTO.*, MARCA.*, DEPARTAMENTO.*"+
                                               " FROM PRODUTO"+
                                               " INNER JOIN MARCA ON PRODUTO.CODMARCA = MARCA.CODMARCA"+
-                                              " INNER JOIN DEPARTAMENTO ON PRODUTO.CODDPTO = DEPARTAMENTO.CODDPTO");
+                                              " INNER JOIN DEPARTAMENTO ON PRODUTO.CODDPTO = DEPARTAMENTO.CODDPTO"+
+                                              " WHERE PRODUTO.ATIVO = 1");
                     
-                    listaProdutosCompletos = new ArrayList<>();
+            listaProdutosCompletos = new ArrayList<>();
                     
-                    while (res.next()) {
-                
+            while (res.next()) {
                 Marca marcaProduto = new Marca(res.getInt("CODMARCA"), res.getString("NOMEMARCA"));
                 
                 Departamento departamentoProduto = new Departamento(res.getInt("CODDPTO"), 
@@ -83,9 +83,8 @@ public class ProdutoDao {
             listaProdutosCompletos = null;
         }
         return listaProdutosCompletos;
-   
 }
-    
+   
     public boolean produtoInserir(Produto produto) {
         boolean resultado;
         PreparedStatement stmt = null;
