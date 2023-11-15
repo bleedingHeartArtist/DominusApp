@@ -26,7 +26,8 @@ public class ProdutoDao {
                                               " FROM PRODUTO"+
                                               " INNER JOIN MARCA ON PRODUTO.CODMARCA = MARCA.CODMARCA"+
                                               " INNER JOIN DEPARTAMENTO ON PRODUTO.CODDPTO = DEPARTAMENTO.CODDPTO"+
-                                              " WHERE PRODUTO.CODVENDEDOR = "+vendedor.getCodUsuario());
+                                              " WHERE PRODUTO.CODVENDEDOR = "+vendedor.getCodUsuario()+
+                                              " AND PRODUTO.ATIVO = 1");
             
             listaProdutos = new ArrayList<>();
             
@@ -49,8 +50,6 @@ public class ProdutoDao {
         return listaProdutos;
     }
     
-<<<<<<< Updated upstream
-=======
     public ArrayList<Produto> getListaCompleta() {
     Statement stmt = null;
     ArrayList<Produto> listaProdutosCompletos;
@@ -66,7 +65,6 @@ public class ProdutoDao {
             listaProdutosCompletos = new ArrayList<>();
                     
             while (res.next()) {
-                
                 Marca marcaProduto = new Marca(res.getInt("CODMARCA"), res.getString("NOMEMARCA"));
                 
                 Departamento departamentoProduto = new Departamento(res.getInt("CODDPTO"), 
@@ -86,16 +84,15 @@ public class ProdutoDao {
         }
         return listaProdutosCompletos;
 }
-    
->>>>>>> Stashed changes
+   
     public boolean produtoInserir(Produto produto) {
         boolean resultado;
         PreparedStatement stmt = null;
         
         try {
             con.setAutoCommit(false);
-            String sql = "INSERT INTO PRODUTO (NOME, DESCRICAO, CODDPTO, PRECO, CODMARCA, CODVENDEDOR)"+
-                    " VALUES (?,?,?,?,?,?)";
+            String sql = "INSERT INTO PRODUTO (NOME, DESCRICAO, CODDPTO, PRECO, CODMARCA, CODVENDEDOR, ATIVO)"+
+                    " VALUES (?,?,?,?,?,?,?)";
             
             stmt = con.prepareStatement(sql);
             
@@ -105,6 +102,7 @@ public class ProdutoDao {
             stmt.setFloat(4, produto.getPreco());
             stmt.setInt(5, produto.getMarca().getCodMarca());
             stmt.setInt(6, produto.getVendedor().getCodUsuario());
+            stmt.setInt(7, 1);
             
             stmt.execute();
             con.commit();
@@ -131,4 +129,43 @@ public class ProdutoDao {
         }      
         return resultado;
     }  
+    
+    public boolean produtoExcluir(Produto produto) {
+        boolean resultado;
+        PreparedStatement stmt = null;
+        
+        try {
+            con.setAutoCommit(false);
+            
+            String sql = "UPDATE PRODUTO"+
+                         " SET PRODUTO.ATIVO = 2"+
+                         " WHERE PRODUTO.CODPRODUTO = ?";
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, produto.getCodProduto());
+            
+            stmt.execute();
+            con.commit();
+            resultado = true;
+        } catch (SQLException e) {
+            try {
+                con.rollback();
+                e.printStackTrace();
+                resultado = false;
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                resultado = false;
+            }
+        } finally {
+            try {
+                stmt.close();
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                resultado = false;
+            }
+        }
+        return resultado;
+    }
+        
 }
