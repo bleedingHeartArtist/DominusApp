@@ -2,7 +2,7 @@ package modelDominio;
 
 import java.io.Serializable;
 
-public class Cliente extends Usuario implements Serializable{ 
+public class Cliente extends Usuario implements Serializable{
     private static final long serialVersionUID = 123l;
     private String cpf;
 
@@ -11,16 +11,16 @@ public class Cliente extends Usuario implements Serializable{
         return super.toString()+"Cliente ("+')';
     }
 
-    public Cliente(String cpf, int codUsuario, String nome, String endereco) {
-        super(codUsuario, nome, endereco);
+    public Cliente(String nome, String login, String senha, String endereco, String cpf) {
+        super(nome, login, senha, endereco);
         this.cpf = cpf;
     }
-    
+
     public Cliente(String cpf, int codUsuario, String nome) {
         super(codUsuario, nome);
         this.cpf = cpf;
     }
-    
+
     public Cliente(String nome, String login, String senha, String endereco) {
         super(nome, login, senha, endereco);
     }
