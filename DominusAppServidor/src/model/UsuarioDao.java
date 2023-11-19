@@ -130,4 +130,45 @@ public class UsuarioDao {
         return listaClientes;
     }
     
+    public boolean clienteInserir(Cliente cliente) {
+        boolean resultado;
+        PreparedStatement stmt = null;
+        
+        try {
+            con.setAutoCommit(false);
+            
+            String sql = "INSERT INTO USUARIO (NOME, LOGIN, SENHA, ENDERECO, CPF, TIPO)"+
+                        " VALUES (?,?,?,?,?,1)";
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, cliente.getNome());
+            stmt.setString(2, cliente.getLogin());
+            stmt.setString(3, cliente.getSenha());
+            stmt.setString(4, cliente.getEndereco());
+            stmt.setString(5, cliente.getCpf());
+            
+            stmt.execute();
+            con.commit();
+            resultado = true;
+        } catch (SQLException e) {
+            try {
+                con.rollback();
+                e.printStackTrace();
+                resultado = false;
+            } catch (SQLException ex) {
+                e.printStackTrace();
+                resultado = false;
+            }
+        } finally {
+            try {
+                stmt.close();
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                resultado = false;
+            }
+        }
+        return resultado;
+    }
+    
 }

@@ -9,6 +9,7 @@ import model.MarcaDao;
 import model.ProdutoDao;
 import model.UsuarioDao;
 import model.VendaDao;
+import modelDominio.Cliente;
 import modelDominio.Produto;
 import modelDominio.Usuario;
 import modelDominio.Vendedor;
@@ -90,6 +91,11 @@ public class TrataClienteController extends Thread {
                     Produto produto = (Produto)in.readObject();
                     ProdutoDao produtoDao = new ProdutoDao();
                     out.writeObject(produtoDao.produtoExcluir(produto));
+                } else if (comando.equalsIgnoreCase("ClienteInserir")) {
+                    out.writeObject("ok");
+                    Cliente cliente = (Cliente) in.readObject();
+                    UsuarioDao usrDao = new UsuarioDao();
+                    out.writeObject(usrDao.clienteInserir(cliente));
                 }
                 comando = (String) in.readObject();
             }
