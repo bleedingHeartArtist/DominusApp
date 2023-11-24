@@ -22,7 +22,7 @@ public class UsuarioDao {
         try {
             String select = "SELECT *"
                             +" FROM usuario"
-                            +" WHERE login = ? AND senha = ?;";
+                            +" WHERE EMAIL = ? AND senha = ?;";
             statement = con.prepareStatement(select);
             statement.setString(1, usuario.getLogin());
             statement.setString(2, usuario.getSenha());
@@ -32,11 +32,11 @@ public class UsuarioDao {
             if (resultSet.next()) {
                 if (resultSet.getInt("tipo") == 1) {
                     usuarioSelect = new Cliente(resultSet.getString("cpf"),resultSet.getInt("codUsuario"), resultSet.getString("nome"),
-                                    resultSet.getString("login"), resultSet.getString("senha"), resultSet.getString("endereco"));
+                                    resultSet.getString("EMAIL"), resultSet.getString("senha"), resultSet.getString("endereco"));
                     
                 } else {
                     usuarioSelect = new Vendedor(resultSet.getString("cnpj"), resultSet.getInt("codUsuario"), resultSet.getString("nome"),
-                                    resultSet.getString("login"), resultSet.getString("senha"), resultSet.getString("endereco"));
+                                    resultSet.getString("EMAIL"), resultSet.getString("senha"), resultSet.getString("endereco"));
                 }     
             }  
         } catch (Exception e) {
@@ -44,7 +44,7 @@ public class UsuarioDao {
         } finally {
             try {resultSet.close();} catch (Exception e) {/*Ignorado*/}
             try {statement.close();} catch (Exception e) {/*Ignorado*/}
-            try {statement.close();} catch (Exception e) {/*Ignorado*/}
+            try {con.close();} catch (Exception e) {/*Ignorado*/}
             return usuarioSelect;
         }
     }
@@ -56,7 +56,7 @@ public class UsuarioDao {
         try {
             con.setAutoCommit(false);
             
-            String sql = ("INSERT INTO USUARIO (NOME, LOGIN, SENHA, ENDERECO, CNPJ, CPF, TIPO)"+
+            String sql = ("INSERT INTO USUARIO (NOME, EMAIL, SENHA, ENDERECO, CNPJ, CPF, TIPO)"+
                           " VALUES(?,?,?,?,?,NULL,2)");
             stmt = con.prepareStatement(sql);
             stmt.setString(1, vendedor.getNome());
@@ -137,7 +137,7 @@ public class UsuarioDao {
         try {
             con.setAutoCommit(false);
             
-            String sql = "INSERT INTO USUARIO (NOME, LOGIN, SENHA, ENDERECO, CPF, TIPO)"+
+            String sql = "INSERT INTO USUARIO (NOME, EMAIL, SENHA, ENDERECO, CPF, TIPO)"+
                         " VALUES (?,?,?,?,?,1)";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, cliente.getNome());
@@ -166,6 +166,73 @@ public class UsuarioDao {
             } catch (SQLException e) {
                 e.printStackTrace();
                 resultado = false;
+            }
+        }
+        return resultado;
+    }
+    
+    public boolean validaEmail(String emailDestinatario) {
+        boolean resultado;        
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        
+        try {
+            String select = "SELECT *"
+                            +" FROM usuario"
+                            +" WHERE email = ?;";
+            statement = con.prepareStatement(select);
+            statement.setString(1, emailDestinatario);
+            
+            resultSet = statement.executeQuery();
+            
+            if (resultSet.next()) {
+                resultado = true;
+            } else
+                resultado = false;
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultado = false;
+        } finally {
+            try {resultSet.close();} catch (Exception e) {/*Ignorado*/}
+            try {statement.close();} catch (Exception e) {/*Ignorado*/}
+            try {con.close();} catch (Exception e) {/*Ignorado*/}
+        }
+        return resultado;
+    }
+    
+    public boolean alterarSenhaRecup(Usuario usr) {
+        boolean resultado;
+        PreparedStatement statement = null;
+        
+        try {
+            con.setAutoCommit(false);
+            
+            String sql = "UPDATE USUARIO SET SENHA = ?"+
+                    " WHERE EMAIL = ?";
+            
+            statement = con.prepareStatement(sql);
+            statement.setString(1, usr.getSenha());
+            statement.setString(2, usr.getLogin());
+            
+            statement.execute();
+            con.commit();
+            resultado = true;
+        } catch (SQLException e) {
+            try {
+                con.rollback();
+                e.printStackTrace();
+                return false;
+            } catch (SQLException ex) {
+                return false;
+            }
+        } finally {
+            try {
+                statement.close();
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                return false;
             }
         }
         return resultado;
