@@ -96,6 +96,16 @@ public class TrataClienteController extends Thread {
                     Cliente cliente = (Cliente) in.readObject();
                     UsuarioDao usrDao = new UsuarioDao();
                     out.writeObject(usrDao.clienteInserir(cliente));
+                } else if (comando.equalsIgnoreCase("RecuperarSenha")) {
+                    out.writeObject("ok");
+                    String emailDestinatario = (String) in.readObject();
+                    JavaMail javaMail = new JavaMail();             
+                    out.writeObject(javaMail.enviaCodRecuperacao(emailDestinatario));
+                } else if(comando.equalsIgnoreCase("AlterarSenhaRecup")) {
+                    out.writeObject("ok");
+                    Usuario usr = (Usuario) in.readObject();
+                    UsuarioDao usrDao = new UsuarioDao();
+                    out.writeObject(usrDao.alterarSenhaRecup(usr));
                 }
                 comando = (String) in.readObject();
             }
