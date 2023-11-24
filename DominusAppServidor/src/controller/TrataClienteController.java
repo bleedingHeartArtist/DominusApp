@@ -10,6 +10,7 @@ import model.ProdutoDao;
 import model.UsuarioDao;
 import model.VendaDao;
 import modelDominio.Cliente;
+import modelDominio.Departamento;
 import modelDominio.Produto;
 import modelDominio.Usuario;
 import modelDominio.Vendedor;
@@ -72,7 +73,12 @@ public class TrataClienteController extends Thread {
                     out.writeObject(marcaDao.getLista());
                 } else if (comando.equalsIgnoreCase("ListaDepartamentos")) {
                     DepartamentoDao dptoDao = new DepartamentoDao();
-                    out.writeObject(dptoDao.getLista());  
+                    out.writeObject(dptoDao.getLista()); 
+                } else if (comando.equalsIgnoreCase("ListaProdutosDepartamento")) {
+                    out.writeObject("ok");
+                    Departamento departamento = (Departamento) in.readObject();
+                    ProdutoDao produtoDao = new ProdutoDao();
+                    out.writeObject(produtoDao.getListaProdutosDepartamento(departamento));
                 } else if (comando.equalsIgnoreCase("ProdutoInserir")) {
                     out.writeObject("ok");
                     Produto produto = (Produto)in.readObject();

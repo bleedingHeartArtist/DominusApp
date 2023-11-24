@@ -84,6 +84,39 @@ public class ProdutoDao {
         }
         return listaProdutosCompletos;
 }
+    public ArrayList<Produto> getListaProdutosDepartamento(Departamento departamento ) {
+        Statement stmt = null;
+        ArrayList<Produto> listaProdutosDepartamento;
+        
+        try {
+            stmt = con.createStatement();
+            
+            ResultSet res = stmt.executeQuery(" SELECT PRODUTO.*, MARCA.*, DEPARTAMENTO.*"+
+                                              " FROM PRODUTO"+
+                                              " INNER JOIN MARCA ON PRODUTO.CODMARCA = MARCA.CODMARCA"+
+                                              " INNER JOIN DEPARTAMENTO ON PRODUTO.CODDPTO = DEPARTAMENTO.CODDPTO"+
+                                              " WHERE PRODUTO.CODDPTO = "+departamento.getCodDpto()+
+                                              " AND PRODUTO.ATIVO = 1");
+            
+            listaProdutosDepartamento = new ArrayList<>();
+            
+            while (res.next()) {
+                
+                Marca marcaProduto = new Marca(res.getInt("CODMARCA"), res.getString("NOMEMARCA"));     
+                               
+                Vendedor vendedorProduto = new Vendedor(res.getInt("CODVENDEDOR"));
+                
+                Produto produtoSelecionado = new Produto(res.getInt("CODPRODUTO"), res.getString("NOME"), res.getString("DESCRICAO"),
+                res.getFloat("PRECO"), marcaProduto, departamento, vendedorProduto);
+                
+                listaProdutosDepartamento.add(produtoSelecionado);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            listaProdutosDepartamento = null;
+        }
+        return listaProdutosDepartamento;
+    }
    
     public boolean produtoInserir(Produto produto) {
         boolean resultado;
