@@ -53,5 +53,9 @@ public class Vendedor extends Usuario implements Serializable{
     public Vendedor(int codUsuario) {
         super(codUsuario);
     }
-    
+
+    public Vendedor(String cnpj, int codUsuario, String nome, String endereco) {
+        super(codUsuario, nome, endereco);
+        this.cnpj = cnpj;
+    }
 }

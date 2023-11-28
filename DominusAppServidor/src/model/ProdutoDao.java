@@ -56,8 +56,9 @@ public class ProdutoDao {
     
         try {
             stmt = con.createStatement();
-            ResultSet res = stmt.executeQuery("SELECT PRODUTO.*, MARCA.*, DEPARTAMENTO.*"+
+            ResultSet res = stmt.executeQuery("SELECT PRODUTO.*, MARCA.*, DEPARTAMENTO.*, USUARIO.NOME AS USUARIONOME, USUARIO.CODUSUARIO, USUARIO.CNPJ, USUARIO.ENDERECO"+
                                               " FROM PRODUTO"+
+                                              " INNER JOIN USUARIO ON PRODUTO.CODVENDEDOR = USUARIO.CODUSUARIO"+
                                               " INNER JOIN MARCA ON PRODUTO.CODMARCA = MARCA.CODMARCA"+
                                               " INNER JOIN DEPARTAMENTO ON PRODUTO.CODDPTO = DEPARTAMENTO.CODDPTO"+
                                               " WHERE PRODUTO.ATIVO = 1");
@@ -70,7 +71,7 @@ public class ProdutoDao {
                 Departamento departamentoProduto = new Departamento(res.getInt("CODDPTO"), 
                  res.getString("NOMEDPTO"));
                 
-                Vendedor vendedorProduto = new Vendedor(res.getInt("CODVENDEDOR"));
+                Vendedor vendedorProduto = new Vendedor(res.getString("CNPJ"),res.getInt("CODUSUARIO"), res.getString("USUARIONOME"), res.getString("ENDERECO"));
                 
                 Produto produtoSelecionado = new Produto(res.getInt("CODPRODUTO"), res.getString("NOME"), res.getString("DESCRICAO"), res.getFloat("PRECO"), marcaProduto, departamentoProduto, vendedorProduto);
                 
@@ -91,8 +92,9 @@ public class ProdutoDao {
         try {
             stmt = con.createStatement();
             
-            ResultSet res = stmt.executeQuery(" SELECT PRODUTO.*, MARCA.*, DEPARTAMENTO.*"+
+            ResultSet res = stmt.executeQuery(" SELECT PRODUTO.*, MARCA.*, DEPARTAMENTO.*,  USUARIO.NOME AS USUARIONOME, USUARIO.CODUSUARIO, USUARIO.CNPJ, USUARIO.ENDERECO"+
                                               " FROM PRODUTO"+
+                                              " INNER JOIN USUARIO ON PRODUTO.CODVENDEDOR = USUARIO.CODUSUARIO"+
                                               " INNER JOIN MARCA ON PRODUTO.CODMARCA = MARCA.CODMARCA"+
                                               " INNER JOIN DEPARTAMENTO ON PRODUTO.CODDPTO = DEPARTAMENTO.CODDPTO"+
                                               " WHERE PRODUTO.CODDPTO = "+departamento.getCodDpto()+
@@ -104,7 +106,7 @@ public class ProdutoDao {
                 
                 Marca marcaProduto = new Marca(res.getInt("CODMARCA"), res.getString("NOMEMARCA"));     
                                
-                Vendedor vendedorProduto = new Vendedor(res.getInt("CODVENDEDOR"));
+                 Vendedor vendedorProduto = new Vendedor(res.getString("CNPJ"),res.getInt("CODUSUARIO"), res.getString("USUARIONOME"), res.getString("ENDERECO"));
                 
                 Produto produtoSelecionado = new Produto(res.getInt("CODPRODUTO"), res.getString("NOME"), res.getString("DESCRICAO"),
                 res.getFloat("PRECO"), marcaProduto, departamento, vendedorProduto);
