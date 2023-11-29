@@ -15,7 +15,7 @@ public class Venda implements Serializable{
     private ArrayList<ItensVenda> itens;
     private Cliente cliente;
 
-    public Venda(int codVenda, Date dataVenda, float valor, ArrayList<ItensVenda> itens, Usuario comprador) {
+    public Venda(int codVenda, Date dataVenda, float valor, ArrayList<ItensVenda> itens, Cliente cliente) {
         this.codVenda = codVenda;
         this.dataVenda = dataVenda;
         this.valor = valor;
@@ -28,7 +28,7 @@ public class Venda implements Serializable{
         this.dataVenda = dataVenda;
         this.valor = valor;
         this.itens = itens;
-        this.cliente = cliente;
+        this.cliente = new Cliente(null, comprador.getCodUsuario(), comprador.getNome());
     }
 
     @Override
