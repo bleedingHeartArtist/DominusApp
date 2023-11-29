@@ -88,5 +88,57 @@ public class VendaDao {
         }
         return listaVendas;
     }
+    
+    public boolean vendaInserir(Venda novaVenda) {
+        boolean resultado;
+        PreparedStatement stmt = null;
+        
+        try {
+            con.setAutoCommit(false);
+            
+            String sql = "INSERT INTO VENDA(DATAVENDA,VALOR,CODCLIENTE)"+
+                         " VALUES(?,?,?);";
+                    
+            stmt = con.prepareStatement(sql);
+            stmt.setDate(1, new java.sql.Date(novaVenda.getDataVenda().getTime()));
+            stmt.setFloat(2, novaVenda.getValor());
+            stmt.setInt(3, novaVenda.getCliente().getCodUsuario());
+            
+            stmt.execute();
+            con.commit();
+            
+            sql = " INSERT INTO ITENSVENDA(QUANTIDADE, VALORUNITARIO, VALORTOTAL, CODVENDA, CODPRODUTO)"+
+                  " VALUES (?, ?, ?, (SELECT CODVENDA FROM VENDA ORDER BY CODVENDA DESC LIMIT 1), ?);";
+            
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, novaVenda.getItens().get(0).getQuantidade());
+            stmt.setFloat(2, novaVenda.getItens().get(0).getValorUnitario());
+            stmt.setFloat(3, novaVenda.getItens().get(0).getValorTotal());
+            stmt.setInt(4, novaVenda.getItens().get(0).getProduto().getCodProduto());
+            
+            stmt.execute();
+            con.commit();
+            resultado = true;
+        } catch (SQLException e) {
+            try {
+                con.rollback();
+                e.printStackTrace();
+                resultado = false;
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                resultado = false;
+            }
+        } finally {
+            try {
+                stmt.close();
+                con.setAutoCommit(true);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                resultado = false;
+            }
+        }
+        return resultado;
+    }
    
 }

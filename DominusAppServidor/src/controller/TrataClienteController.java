@@ -13,6 +13,7 @@ import modelDominio.Cliente;
 import modelDominio.Departamento;
 import modelDominio.Produto;
 import modelDominio.Usuario;
+import modelDominio.Venda;
 import modelDominio.Vendedor;
 
 public class TrataClienteController extends Thread {
@@ -112,6 +113,11 @@ public class TrataClienteController extends Thread {
                     Usuario usr = (Usuario) in.readObject();
                     UsuarioDao usrDao = new UsuarioDao();
                     out.writeObject(usrDao.alterarSenhaRecup(usr));
+                } else if (comando.equalsIgnoreCase("VendaInserir")) {
+                    out.writeObject("ok");
+                    Venda novaVenda = (Venda) in.readObject();
+                    VendaDao vendaDao = new VendaDao();
+                    out.writeObject(vendaDao.vendaInserir(novaVenda));        
                 }
                 comando = (String) in.readObject();
             }
