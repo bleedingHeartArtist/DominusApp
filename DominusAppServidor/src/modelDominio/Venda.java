@@ -8,15 +8,23 @@ import java.util.Date;
 
 public class Venda implements Serializable{
     private static final long serialVersionUID = 123l;
-    
+
     private int codVenda;
     private Date dataVenda;
     private float valor;
     private ArrayList<ItensVenda> itens;
     private Cliente cliente;
 
-    public Venda(int codVenda, Date dataVenda, float valor, ArrayList<ItensVenda> itens, Cliente cliente) {
+    public Venda(int codVenda, Date dataVenda, float valor, ArrayList<ItensVenda> itens, Usuario comprador) {
         this.codVenda = codVenda;
+        this.dataVenda = dataVenda;
+        this.valor = valor;
+        this.itens = itens;
+        this.cliente = cliente;
+    }
+
+    public Venda(Date dataVenda, float valor, ArrayList<ItensVenda> itens, Usuario comprador) {
+        //PARA INSERTS
         this.dataVenda = dataVenda;
         this.valor = valor;
         this.itens = itens;
@@ -67,28 +75,28 @@ public class Venda implements Serializable{
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
-    
+
     public String getDataVendaString() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         return sdf.format(this.dataVenda);
     }
-    
-    public String getValorString() { 
+
+    public String getValorString() {
         DecimalFormat dcf = new DecimalFormat("#,##0.00");
         return dcf.format(this.valor);
     }
-    
+
     public String getItensLiteral() {
         String itens = "";
-        
+
         for (int i = 0; i < this.itens.size(); i++) {
             if (!itens.equals("")) {
                 itens += ", ";
             }
             itens += this.itens.get(i).getProduto().getNome();
         }
-        
+
         return itens;
     }
-    
+
 }

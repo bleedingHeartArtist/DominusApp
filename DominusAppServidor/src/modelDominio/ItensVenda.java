@@ -56,12 +56,12 @@ public class ItensVenda implements Serializable {
         this.quantidade = quantidade;
     }
 
-    public float getValorUnitário() {
+    public float getValorUnitario() {
         return valorUnitario;
     }
 
-    public void setValorUnitário(float valorUnitário) {
-        this.valorUnitario = valorUnitário;
+    public void setValorUnitario(float valorUnitario) {
+        this.valorUnitario = valorUnitario;
     }
 
     public float getValorTotal() {
